@@ -14,4 +14,4 @@ Run `vagrant up builder` to launch the environment that builds the `shared/sshd.
 
 Run `vagrant up bios` to launch `shared/sshd.iso`.
 
-Run `vagrant up efi` to launch `shared/sshd-efi.iso`.
+Run `vagrant up efi` to launch `shared/sshd-efi.iso` (**NB** this is somewhat boken because the screen stays blank).
