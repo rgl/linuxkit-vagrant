@@ -15,3 +15,9 @@ Run `vagrant up builder` to launch the environment that builds the `shared/sshd.
 Run `vagrant up bios` to launch `shared/sshd.iso`.
 
 Run `vagrant up efi` to launch `shared/sshd-efi.iso` (**NB** this is somewhat boken because the screen stays blank).
+
+If you happen to be in a Linux based host with qemu you can also launch the iso with:
+
+```bash
+(cd shared && ./linuxkit run qemu -gui -iso sshd)
+```
