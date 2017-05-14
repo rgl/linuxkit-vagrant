@@ -117,6 +117,8 @@ linuxkit version
 cd examples
 # put a shell console on the machine console.
 sed -i -E 's,(cmdline:).+,\1 "console=tty0 page_poison=1",' sshd.yml
+# add the default vagrant insecure key.
+sed -i -E "s,(contents:).+#your ssh key here.+,\1 \"$(wget -qO- https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub)\"," sshd.yml
 # build it.
 moby build sshd.yml
 
