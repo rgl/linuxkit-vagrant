@@ -115,7 +115,9 @@ linuxkit version
 # build an example iso.
 
 cd examples
-sed -i -E 's,(cmdline: ")console=ttyS0 (.+),\1\2,' sshd.yml # make the kernel log to the machine console.
+# put a shell console on the machine console.
+sed -i -E 's,(cmdline:).+,\1 "console=tty0 page_poison=1",' sshd.yml
+# build it.
 moby build sshd.yml
 
 
