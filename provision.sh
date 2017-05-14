@@ -99,7 +99,12 @@ git reset --hard b86fcd5253cf5ba67aef9c875d8ef43b47055127
 # build linuxkit.
 
 make
-export PATH="$PATH:$PWD/bin"
+
+# add to PATH.
+cat >/etc/profile.d/linuxkit.sh <<EOF
+export PATH="\$PATH:$PWD/bin"
+EOF
+source /etc/profile.d/linuxkit.sh
 
 # show the built binaries versions.
 moby version
