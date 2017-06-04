@@ -16,9 +16,9 @@ Vagrant.configure('2') do |config|
   end
 
   ['bios', 'efi'].each do |firmware|
-    config.ssh.username = 'root'
-    config.ssh.shell = '/bin/sh' # LinuxKit Alpine uses BusyBox ash instead of bash.
     config.vm.define firmware do |config|
+      config.ssh.username = 'root'
+      config.ssh.shell = '/bin/sh' # LinuxKit Alpine uses BusyBox ash instead of bash.
       config.vm.box = 'empty'
       config.vm.synced_folder '.', '/vagrant', disabled: true
       config.vm.provider :virtualbox do |vb|
