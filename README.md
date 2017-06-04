@@ -21,3 +21,10 @@ If you happen to be in a Linux based host with qemu you can also launch the iso 
 ```bash
 (cd shared && ./linuxkit run qemu -gui -iso sshd)
 ```
+
+# References
+
+* [Kernel Parameters Index](https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.rst)
+* [Kernel Parameters List](https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt)
+* [Booloader Parameters List (AMD64)](https://www.kernel.org/doc/Documentation/x86/x86_64/boot-options.txt)
+* [Building the Simplest Possible Linux System by Rob Landley](https://www.youtube.com/watch?v=Sk9TatW9ino)
