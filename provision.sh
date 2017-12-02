@@ -50,8 +50,6 @@ alias l='ls -lF --color'
 alias ll='l -a'
 alias h='history 25'
 alias j='jobs -l'
-alias jcli='java -jar /var/cache/jenkins/war/WEB-INF/jenkins-cli.jar -s http://localhost:8080 -i ~/.ssh/id_rsa'
-alias jgroovy='jcli groovy'
 EOF
 
 cat >~/.inputrc <<'EOF'
@@ -92,7 +90,7 @@ git config --global core.autocrlf false
 
 git clone https://github.com/linuxkit/linuxkit.git
 cd linuxkit
-git reset --hard b86fcd5253cf5ba67aef9c875d8ef43b47055127
+git reset --hard 00aaf428d94b88352dd514a39fe5e86054d122b0
 
 
 #
@@ -106,26 +104,25 @@ export PATH="\$PATH:$PWD/bin"
 EOF
 source /etc/profile.d/linuxkit.sh
 
-# show the built binaries versions.
-moby version
+# show the built binary version.
 linuxkit version
 
 
 #
-# build an example iso.
+# build example iso (for bios and efi boot) and kernel+initrd (for pxe boot) images.
 
 cd examples
 # put a shell console on the machine console.
-sed -i -E 's,(cmdline:).+,\1 "console=tty0 page_poison=1",' sshd.yml
+sed -i -E 's,(cmdline:).+,\1 "console=tty0",' sshd.yml
 # add the default vagrant insecure key.
-sed -i -E "s,(contents:).+#your ssh key here.+,\1 \"$(wget -qO- https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub)\"," sshd.yml
+sed -i -E "s,source:.+,contents: \"$(wget -qO- https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub)\"," sshd.yml
 # build it.
-moby build sshd.yml
+linuxkit build -format iso-bios,iso-efi,kernel+initrd sshd.yml
 
 
 #
 # copy built artefacts to the host, so we can use them from the host or other VMs.
 
 mkdir -p /vagrant/shared
-cp ../bin/{moby,linuxkit} /vagrant/shared
+cp ../bin/linuxkit /vagrant/shared
 cp sshd* /vagrant/shared
