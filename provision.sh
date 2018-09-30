@@ -76,6 +76,9 @@ apt-get update
 apt-get install -y docker-ce
 docker version
 
+# let the vagrant user manage docker.
+usermod -aG docker vagrant
+
 
 #
 # configure git.
