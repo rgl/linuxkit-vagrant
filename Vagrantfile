@@ -2,7 +2,7 @@ config_builder_fqdn = 'builder.lk.example.com'
 config_builder_ip   = '10.1.0.2'
 
 Vagrant.configure('2') do |config|
-  config.vm.box = 'ubuntu-16.04-amd64'
+  config.vm.box = 'ubuntu-18.04-amd64'
 
   config.vm.provider :virtualbox do |vb|
     vb.linked_clone = true
