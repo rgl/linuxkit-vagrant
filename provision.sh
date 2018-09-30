@@ -125,7 +125,7 @@ cd examples
 # put a shell console on the machine console.
 sed -i -E 's,(cmdline:).+,\1 "console=tty0",' sshd.yml
 # add the default vagrant insecure key.
-sed -i -E "s,source:.+,contents: \"$(wget -qO- https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub)\"," sshd.yml
+sed -i -E "s,source:.+,contents: \"$(wget -qO- https://raw.github.com/hashicorp/vagrant/master/keys/vagrant.pub)\"," sshd.yml
 # build it.
 linuxkit build -format iso-bios,iso-efi,kernel+initrd sshd.yml
 
