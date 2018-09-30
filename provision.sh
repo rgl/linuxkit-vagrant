@@ -100,7 +100,7 @@ apt-get install -y make
 
 git clone https://github.com/linuxkit/linuxkit.git
 cd linuxkit
-git reset --hard 00aaf428d94b88352dd514a39fe5e86054d122b0
+git reset --hard 5a6fb46b6e5769cdb012e1aec29140f275991477
 
 
 #
