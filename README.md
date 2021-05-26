@@ -4,11 +4,11 @@ This is a [Vagrant](https://www.vagrantup.com/) Environment for a playing with [
 
 Build and install the [Ubuntu Base Box](https://github.com/rgl/ubuntu-vagrant).
 
-Run `vagrant up builder` to launch the environment that builds the `shared/sshd.iso` and `shared/sshd-efi.iso` files.
+Run `vagrant up builder --no-destroy-on-error --no-tty` to launch the environment that builds the `shared/sshd.iso` and `shared/sshd-efi.iso` files.
 
-Run `vagrant up bios` to launch `shared/sshd.iso`.
+Run `vagrant up bios --no-destroy-on-error --no-tty` to launch `shared/sshd.iso`.
 
-Run `vagrant up efi` to launch `shared/sshd-efi.iso` (**NB** this is somewhat boken because the screen stays blank).
+Run `vagrant up efi --no-destroy-on-error --no-tty` to launch `shared/sshd-efi.iso` (**NB** this is somewhat boken because the screen stays blank).
 
 You can also launch the iso with one of:
 

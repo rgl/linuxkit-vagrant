@@ -2,7 +2,7 @@ config_builder_fqdn = 'builder.lk.example.com'
 config_builder_ip   = '10.1.0.2'
 
 Vagrant.configure('2') do |config|
-  config.vm.box = 'ubuntu-18.04-amd64'
+  config.vm.box = 'ubuntu-20.04-amd64'
 
   config.vm.provider :libvirt do |lv, config|
     lv.memory = 2048
@@ -34,12 +34,13 @@ Vagrant.configure('2') do |config|
   ['bios', 'efi'].each do |firmware|
     config.vm.define firmware do |config|
       config.ssh.username = 'root'
-      config.ssh.shell = '/bin/sh' # LinuxKit Alpine uses BusyBox ash instead of bash.
+      config.ssh.sudo_command = ''
+      config.vm.guest = 'alpine' # LinuxKit is Alpine based.
       config.vm.box = 'empty'
-      config.vm.synced_folder '.', '/vagrant', disabled: true
-      config.vm.provider :libvirt do |lv|
+      config.vm.provider :libvirt do |lv, config|
         lv.storage :file, :device => :cdrom, :path => "#{Dir.pwd}/shared/sshd#{firmware == 'bios' && '' || '-'+firmware}.iso"
         lv.boot 'cdrom'
+        config.vm.synced_folder '.', '/vagrant', disabled: true
       end
       config.vm.provider :virtualbox do |vb|
         vb.check_guest_additions = false

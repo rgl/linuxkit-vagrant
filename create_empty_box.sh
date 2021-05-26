@@ -7,7 +7,7 @@ rm -rf tmp-empty-box
 mkdir -p tmp-empty-box
 pushd tmp-empty-box
 
-TEMPLATE_BOX=~/.vagrant.d/boxes/ubuntu-18.04-amd64/0/virtualbox
+TEMPLATE_BOX=~/.vagrant.d/boxes/ubuntu-20.04-amd64/0/virtualbox
 
 echo '{"provider":"virtualbox"}' >metadata.json
 VBoxManage createhd --filename empty.vmdk --format VMDK --size 10000
