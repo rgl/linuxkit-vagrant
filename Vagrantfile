@@ -36,7 +36,7 @@ Vagrant.configure('2') do |config|
   ['bios', 'efi'].each do |firmware|
     config.vm.define firmware do |config|
       config.ssh.username = 'root'
-      config.ssh.sudo_command = ''
+      config.ssh.sudo_command = '%c'
       config.vm.guest = 'alpine' # LinuxKit is Alpine based.
       config.vm.box = 'empty'
       config.vm.provider :libvirt do |lv, config|
@@ -57,6 +57,9 @@ Vagrant.configure('2') do |config|
           '--tempeject', 'on',
           '--medium', "shared/sshd#{firmware == 'bios' && '' || '-'+firmware}.iso"]
       end
+      # NB we need to modify the upload_path because /tmp is mounted with noexec.
+      config.vm.provision 'shell', inline: 'uname -a', upload_path: '/var/tmp/vagrant-shell', name: 'linux version'
+      config.vm.provision 'shell', inline: 'ctr version', upload_path: '/var/tmp/vagrant-shell', name: 'containerd version'
     end
   end
 
