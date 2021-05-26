@@ -28,7 +28,9 @@ Vagrant.configure('2') do |config|
     end
     config.vm.hostname = config_builder_fqdn
     config.vm.network :private_network, ip: config_builder_ip
-    config.vm.provision :shell, path: 'provision.sh'
+    config.vm.provision :shell, path: 'provision-base.sh'
+    config.vm.provision :shell, path: 'provision-docker.sh'
+    config.vm.provision :shell, path: 'provision-linuxkit.sh'
   end
 
   ['bios', 'efi'].each do |firmware|
