@@ -38,6 +38,7 @@ Vagrant.configure('2') do |config|
       config.vm.guest = 'alpine' # LinuxKit is Alpine based.
       config.vm.box = 'empty'
       config.vm.provider :libvirt do |lv, config|
+        lv.loader = '/usr/share/ovmf/OVMF.fd' if firmware == 'efi'
         lv.storage :file, :device => :cdrom, :path => "#{Dir.pwd}/shared/sshd#{firmware == 'bios' && '' || '-'+firmware}.iso"
         lv.boot 'cdrom'
         config.vm.synced_folder '.', '/vagrant', disabled: true
