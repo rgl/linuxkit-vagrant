@@ -58,8 +58,15 @@ Vagrant.configure('2') do |config|
           '--medium', "shared/sshd#{firmware == 'bios' && '' || '-'+firmware}.iso"]
       end
       # NB we need to modify the upload_path because /tmp is mounted with noexec.
-      config.vm.provision 'shell', inline: 'uname -a', upload_path: '/var/tmp/vagrant-shell', name: 'linux version'
-      config.vm.provision 'shell', inline: 'ctr version', upload_path: '/var/tmp/vagrant-shell', name: 'containerd version'
+      config.vm.provision 'shell', name: 'show info', upload_path: '/var/tmp/vagrant-shell', inline: '''
+        set -euxo pipefail
+        uname -a
+        ctr version
+        ctr namespaces ls
+        ctr --namespace services.linuxkit images ls
+        ctr --namespace services.linuxkit containers ls
+        #ctr --namespace services.linuxkit container info sshd
+        '''
     end
   end
 
