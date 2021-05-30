@@ -1,0 +1,37 @@
+# NB this is a modified version of https://github.com/linuxkit/linuxkit/blob/6312d580324ee5592dbd026610e1e7897a4aac6b/examples/sshd.yml
+kernel:
+  image: linuxkit/kernel:5.10.34
+  # NB tty0 (or console) represent the current virtual terminal.
+  cmdline: "console=tty1"
+init:
+  - linuxkit/init:78fb57c7da07c4e43c3a37b27755581da087a3b6
+  - linuxkit/runc:bf1e0c61fb4678d6428d0aabbd80db5ea24e4d4d
+  - linuxkit/containerd:cc02c2af9c928c2faeccbe4edc78bd297ad91866
+  - linuxkit/ca-certificates:4df823737c9bf6a9564b736f1a19fd25d60e909a
+onboot:
+  - name: sysctl
+    image: linuxkit/sysctl:02d2bd74509fd063857ceb4c4f502f09ee4f2e0a
+  - name: rngd1
+    image: linuxkit/rngd:bdabfe138f05f7d48396d2f435af16f5a6ccaa45
+    command: ["/sbin/rngd", "-1"]
+services:
+  - name: getty
+    image: linuxkit/getty:ed32c71531f5998aa510847bb07bd847492d4101
+    env:
+     - INSECURE=true
+  - name: rngd
+    image: linuxkit/rngd:bdabfe138f05f7d48396d2f435af16f5a6ccaa45
+  - name: dhcpcd
+    image: linuxkit/dhcpcd:1033f340e2d42f86a60aab70752346f0045ea388
+  - name: sshd
+    image: linuxkit/sshd:add8c094a9a253870b0a596796628fd4ec220b70
+files:
+  - path: root/.ssh/authorized_keys
+    contents: |
+      # from https://raw.github.com/hashicorp/vagrant/master/keys/vagrant.pub
+      ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key
+    mode: "0600"
+    optional: true
+trust:
+  org:
+    - linuxkit

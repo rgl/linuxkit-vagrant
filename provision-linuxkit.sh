@@ -32,18 +32,14 @@ linuxkit version
 
 
 #
-# build example iso (for bios and efi boot) and kernel+initrd (for pxe boot) images.
+# build linuxkit-example iso (for bios and efi boot) and kernel+initrd (for pxe boot) images.
 
-cd examples
-# add the default vagrant insecure key.
-sed -i -E "s,source:.+,contents: \"$(wget -qO- https://raw.github.com/hashicorp/vagrant/master/keys/vagrant.pub)\"," sshd.yml
-# build it.
-linuxkit build -format iso-bios,iso-efi,kernel+initrd sshd.yml
+linuxkit build -format iso-bios,iso-efi,kernel+initrd -docker /vagrant/linuxkit-example.yml
 
 
 #
 # copy built artefacts to the host, so we can use them from the host or other VMs.
 
 mkdir -p /vagrant/shared
-cp ../bin/linuxkit /vagrant/shared
-cp sshd* /vagrant/shared
+cp -f bin/linuxkit /vagrant/shared
+cp -f linuxkit-example* /vagrant/shared

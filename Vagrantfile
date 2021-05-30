@@ -5,25 +5,27 @@ Vagrant.configure('2') do |config|
   config.vm.box = 'ubuntu-20.04-amd64'
 
   config.vm.provider :libvirt do |lv, config|
-    lv.memory = 2048
     lv.cpus = 2
     #lv.cpu_mode = 'host-passthrough'
     #lv.nested = true
+    lv.memory = 2048
     lv.keymap = 'pt'
     config.vm.synced_folder '.', '/vagrant', type: 'nfs'
   end
 
   config.vm.provider :virtualbox do |vb|
     vb.linked_clone = true
-    vb.memory = 2048
     vb.cpus = 2
+    vb.memory = 2048
   end
 
   config.vm.define :builder do |config|
     config.vm.provider :libvirt do |lv|
+      lv.cpus = 4
       lv.memory = 4096
     end
     config.vm.provider :virtualbox do |vb|
+      vb.cpus = 4
       vb.memory = 4096
     end
     config.vm.hostname = config_builder_fqdn
@@ -41,7 +43,7 @@ Vagrant.configure('2') do |config|
       config.vm.box = 'empty'
       config.vm.provider :libvirt do |lv, config|
         lv.loader = '/usr/share/ovmf/OVMF.fd' if firmware == 'efi'
-        lv.storage :file, :device => :cdrom, :path => "#{Dir.pwd}/shared/sshd#{firmware == 'bios' && '' || '-'+firmware}.iso"
+        lv.storage :file, :device => :cdrom, :path => "#{Dir.pwd}/shared/linuxkit-example#{firmware == 'bios' && '' || '-'+firmware}.iso"
         lv.boot 'cdrom'
         config.vm.synced_folder '.', '/vagrant', disabled: true
       end
@@ -55,7 +57,7 @@ Vagrant.configure('2') do |config|
           '--port', '0',
           '--type', 'dvddrive',
           '--tempeject', 'on',
-          '--medium', "shared/sshd#{firmware == 'bios' && '' || '-'+firmware}.iso"]
+          '--medium', "shared/linuxkit-example#{firmware == 'bios' && '' || '-'+firmware}.iso"]
       end
       # NB we need to modify the upload_path because /tmp is mounted with noexec.
       config.vm.provision 'shell', name: 'show info', upload_path: '/var/tmp/vagrant-shell', inline: '''
@@ -66,6 +68,7 @@ Vagrant.configure('2') do |config|
         ctr --namespace services.linuxkit images ls
         ctr --namespace services.linuxkit containers ls
         #ctr --namespace services.linuxkit container info sshd
+        ctr --namespace services.linuxkit tasks ls
         '''
     end
   end
