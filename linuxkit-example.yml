@@ -35,6 +35,13 @@ services:
     image: alpine:3.13
     command: ["/bin/sh", "-c", "while true; do echo hello $(date); sleep 1; done"]
 files:
+  # see https://github.com/linuxkit/linuxkit/blob/master/docs/faq.md#enabling-and-controlling-containerd-logs
+  - path: etc/containerd/runtime-config.toml
+    contents: |
+      cliopts="--log-level debug"
+      stderr="/var/log/containerd.log"
+      stdout="/var/log/containerd.out.log"
+    mode: "0644"
   - path: root/.ssh/authorized_keys
     contents: |
       # from https://raw.github.com/hashicorp/vagrant/master/keys/vagrant.pub
