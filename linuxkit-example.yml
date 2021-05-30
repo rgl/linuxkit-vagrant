@@ -8,6 +8,7 @@ init:
   - linuxkit/runc:bf1e0c61fb4678d6428d0aabbd80db5ea24e4d4d
   - linuxkit/containerd:cc02c2af9c928c2faeccbe4edc78bd297ad91866
   - linuxkit/ca-certificates:4df823737c9bf6a9564b736f1a19fd25d60e909a
+  - linuxkit/memlogd:9b0e8a5b3f67672234170d88833163caf7898984
 onboot:
   - name: sysctl
     image: linuxkit/sysctl:02d2bd74509fd063857ceb4c4f502f09ee4f2e0a
@@ -15,6 +16,7 @@ onboot:
     image: linuxkit/rngd:bdabfe138f05f7d48396d2f435af16f5a6ccaa45
     command: ["/sbin/rngd", "-1"]
 services:
+  # to follow the logs, inside getty type: /proc/1/root/usr/bin/logread -F
   - name: getty
     image: linuxkit/getty:ed32c71531f5998aa510847bb07bd847492d4101
     env:
@@ -23,8 +25,15 @@ services:
     image: linuxkit/rngd:bdabfe138f05f7d48396d2f435af16f5a6ccaa45
   - name: dhcpcd
     image: linuxkit/dhcpcd:1033f340e2d42f86a60aab70752346f0045ea388
+  - name: logwrite
+    image: linuxkit/logwrite:e64e0f06e485e3542b58f3517da3bc13f246d208
+  - name: kmsg
+    image: linuxkit/kmsg:df84eda2a82d5e24ddfe241831af3efb13a1a557
   - name: sshd
     image: linuxkit/sshd:add8c094a9a253870b0a596796628fd4ec220b70
+  - name: test
+    image: alpine:3.13
+    command: ["/bin/sh", "-c", "while true; do echo hello $(date); sleep 1; done"]
 files:
   - path: root/.ssh/authorized_keys
     contents: |
