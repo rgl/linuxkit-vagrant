@@ -33,7 +33,7 @@ services:
     image: linuxkit/kmsg:df84eda2a82d5e24ddfe241831af3efb13a1a557
   - name: sshd
     image: linuxkit/sshd:add8c094a9a253870b0a596796628fd4ec220b70
-  - name: test
+  - name: hello
     image: alpine:3.13
     command: ["/bin/sh", "-c", "while true; do echo hello $(date); sleep 1; done"]
 files:
