@@ -13,7 +13,7 @@ apt-get install -y make
 
 git clone https://github.com/linuxkit/linuxkit.git
 cd linuxkit
-git checkout -f 6312d580324ee5592dbd026610e1e7897a4aac6b # 2021-05-26T13:27:52Z
+git checkout -f 79b32dc2c74a7cd2ef56c834c771b978a5ed16a7 # 2021-06-02T09:34:40Z
 
 
 #
