@@ -18,11 +18,6 @@ onboot:
     image: linuxkit/rngd:bdabfe138f05f7d48396d2f435af16f5a6ccaa45
     command: ["/sbin/rngd", "-1"]
 services:
-  # to follow the logs, inside getty type: /proc/1/root/usr/bin/logread -F
-  - name: getty
-    image: linuxkit/getty:ed32c71531f5998aa510847bb07bd847492d4101
-    env:
-     - INSECURE=true
   - name: rngd
     image: linuxkit/rngd:bdabfe138f05f7d48396d2f435af16f5a6ccaa45
   - name: dhcpcd
@@ -31,8 +26,16 @@ services:
     image: linuxkit/logwrite:e64e0f06e485e3542b58f3517da3bc13f246d208
   - name: kmsg
     image: linuxkit/kmsg:df84eda2a82d5e24ddfe241831af3efb13a1a557
+  - name: getty
+    image: linuxkit/getty:ed32c71531f5998aa510847bb07bd847492d4101
+    env:
+      - INSECURE=true
+    binds.add:
+      - /etc/profile.d/local.sh:/etc/profile.d/local.sh
   - name: sshd
     image: linuxkit/sshd:add8c094a9a253870b0a596796628fd4ec220b70
+    binds.add:
+      - /etc/profile.d/local.sh:/etc/profile.d/local.sh
   - name: hello
     image: alpine:3.13
     command: ["/bin/sh", "-c", "while true; do echo hello $(date); sleep 1; done"]
@@ -49,7 +52,12 @@ files:
       # from https://raw.github.com/hashicorp/vagrant/master/keys/vagrant.pub
       ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key
     mode: "0600"
-    optional: true
+  - path: etc/profile.d/local.sh
+    contents: |
+      alias logread='/proc/1/root/usr/bin/logread'
+      alias l='ls -lF'
+      alias ll='l -a'
+    mode: "0644"
 trust:
   org:
     - linuxkit
