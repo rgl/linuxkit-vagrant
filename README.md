@@ -16,7 +16,9 @@ Then access it with, e.g.:
 vagrant ssh bios
 ```
 
-You can see the logs at `/var/log`.
+You can read individual logs at `/var/log` as separate files. These log files are managed by the `logwrite` service.
+
+You can dump (and then follow) all the logs with `/proc/1/root/usr/bin/logread -F`. This reads the logs from the `memlogd` managed named socket at `/var/run/memlogdq.sock`.
 
 You can also launch the iso with one of:
 
