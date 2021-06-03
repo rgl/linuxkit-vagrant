@@ -58,6 +58,3 @@ files:
       alias l='ls -lF'
       alias ll='l -a'
     mode: "0644"
-trust:
-  org:
-    - linuxkit
