@@ -26,6 +26,15 @@ services:
     image: linuxkit/logwrite:e64e0f06e485e3542b58f3517da3bc13f246d208
   - name: kmsg
     image: linuxkit/kmsg:df84eda2a82d5e24ddfe241831af3efb13a1a557
+  - name: promtail
+    image: grafana/promtail:2.2.1
+    binds.add:
+      - /etc/promtail/config.yml:/etc/promtail/config.yml
+      - /var/log:/host/var/log
+      - /var/run/promtail:/var/run/promtail
+    runtime:
+      mkdir:
+        - /var/run/promtail
   - name: getty
     image: linuxkit/getty:ed32c71531f5998aa510847bb07bd847492d4101
     env:
@@ -41,11 +50,15 @@ services:
     command: ["/bin/sh", "-c", "while true; do echo hello $(date); sleep 1; done"]
 files:
   # see https://github.com/linuxkit/linuxkit/blob/master/docs/faq.md#enabling-and-controlling-containerd-logs
+  # NB we have to move the containerd into a different folder until
+  #    https://github.com/grafana/loki/issues/3804 is addressed.
+  #    NB this didn't work due to https://github.com/linuxkit/linuxkit/issues/3686
+  #       so we have to use a different file extension.
   - path: etc/containerd/runtime-config.toml
     contents: |
       cliopts="--log-level debug"
-      stderr="/var/log/containerd.log"
-      stdout="/var/log/containerd.out.log"
+      stderr="/var/log/containerd.log.txt"
+      stdout="/var/log/containerd.out.log.txt"
     mode: "0644"
   - path: root/.ssh/authorized_keys
     contents: |
@@ -57,4 +70,7 @@ files:
       alias logread='/proc/1/root/usr/bin/logread'
       alias l='ls -lF'
       alias ll='l -a'
+    mode: "0644"
+  - path: etc/promtail/config.yml
+    source: promtail-config.yml
     mode: "0644"

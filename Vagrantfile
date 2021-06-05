@@ -1,6 +1,10 @@
 config_builder_fqdn = 'builder.lk.example.com'
 config_builder_ip   = '10.1.0.2'
 
+# to make sure the vms are created sequentially, we
+# have to force a --no-parallel execution.
+ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+
 Vagrant.configure('2') do |config|
   config.vm.box = 'ubuntu-20.04-amd64'
 
@@ -32,7 +36,8 @@ Vagrant.configure('2') do |config|
     config.vm.network :private_network, ip: config_builder_ip
     config.vm.provision :shell, path: 'provision-base.sh'
     config.vm.provision :shell, path: 'provision-docker.sh'
-    config.vm.provision :shell, path: 'provision-linuxkit.sh'
+    config.vm.provision :shell, path: 'provision-loki.sh'
+    config.vm.provision :shell, path: 'provision-linuxkit.sh', args: [config_builder_ip]
   end
 
   ['bios', 'efi'].each do |firmware|
@@ -45,6 +50,9 @@ Vagrant.configure('2') do |config|
         lv.loader = '/usr/share/ovmf/OVMF.fd' if firmware == 'efi'
         lv.storage :file, :device => :cdrom, :path => "#{Dir.pwd}/shared/linuxkit-example#{firmware == 'bios' && '' || '-'+firmware}.iso"
         lv.boot 'cdrom'
+        lv.management_network_name = 'linuxkit-vagrant0'
+        lv.management_network_address = "#{config_builder_ip}/24"
+        lv.random :model => 'random'
         config.vm.synced_folder '.', '/vagrant', disabled: true
       end
       config.vm.provider :virtualbox do |vb|

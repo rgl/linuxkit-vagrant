@@ -1,0 +1,4 @@
+2021-06-05T15:03:37Z kmsg (189) - 2021-06-05T15:03:34.958455265Z: acpi PNP0A03:00: fail to add MMCONFIG information, can't access extended PCI configuration space under this bridge.
+2021-06-05T15:03:37Z kmsg  SUBSYSTEM=acpi
+2021-06-05T15:03:37Z kmsg  DEVICE=+acpi:PNP0A03:00
+2021-06-05T15:03:37Z kmsg (190) - 2021-06-05T15:03:34.958844265Z: acpiphp: Slot [3] registered

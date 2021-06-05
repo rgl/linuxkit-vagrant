@@ -1,0 +1,68 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /var/run/promtail/positions.yaml
+
+clients:
+  - url: '@@loki_push_url@@'
+
+# NB you can manually test this with ./promtail-dry-run/run.sh.
+scrape_configs:
+  - job_name: logwrite
+    static_configs:
+      - labels:
+          __path__: /host/var/log/*.log
+          job: logwrite
+    pipeline_stages:
+      # remove the /host/ prefix from the filename.
+      - regex:
+          source: filename
+          expression: '^/host(?P<filename>/.+)$'
+      - regex:
+          # NB this time refers to the time memlogd ingested the message.
+          expression: '^(?P<time>\S+?) ((?P<type>onboot)\.\d+-)?(?P<source>\S+?)(\.(?P<stream>\S+?))? (?P<content>.*)$'
+      - labels:
+          filename:
+          source:
+          stream:
+          type:
+      - timestamp:
+          source: time
+          format: RFC3339
+      - output:
+          source: content
+      # further parse the kmsg log to extract the time and multiline content.
+      - match:
+          selector: '{source="kmsg"}'
+          stages:
+            - multiline:
+                firstline: '^\(\d+\) - (?P<time>\S+?): '
+            - regex:
+                expression: '(?s)^\(\d+\) - (?P<time>\S+?): (?P<content>.*)'
+            - timestamp:
+                source: time
+                format: RFC3339Nano
+            - output:
+                source: content
+  - job_name: containerd
+    static_configs:
+      - labels:
+          __path__: /host/var/log/*.log.txt
+          job: containerd
+          source: containerd
+    pipeline_stages:
+      # remove the /host/ prefix from the filename.
+      - regex:
+          source: filename
+          expression: '^/host(?P<filename>/.+)$'
+      - labels:
+          filename:
+      - regex:
+          expression: "^time=\"(?P<time>\\S+?)\" (?P<content>.*)$"
+      - timestamp:
+          source: time
+          format: RFC3339Nano
+      - output:
+          source: content

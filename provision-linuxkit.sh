@@ -2,6 +2,9 @@
 set -euxo pipefail
 
 
+loki_ip_address="${1:-10.10.0.2}"
+
+
 #
 # install build dependencies.
 
@@ -29,6 +32,13 @@ source /etc/profile.d/linuxkit.sh
 
 # show the built binary version.
 linuxkit version
+
+
+#
+# configure promtail.
+
+sed -E "s,@@loki_push_url@@,http://$loki_ip_address:3100/loki/api/v1/push,g" /vagrant/promtail-config.yml \
+    >promtail-config.yml
 
 
 #
