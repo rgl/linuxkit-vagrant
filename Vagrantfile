@@ -37,6 +37,7 @@ Vagrant.configure('2') do |config|
     config.vm.provision :shell, path: 'provision-base.sh'
     config.vm.provision :shell, path: 'provision-docker.sh'
     config.vm.provision :shell, path: 'provision-loki.sh'
+    config.vm.provision :shell, path: 'provision-grafana.sh', args: [config_builder_ip]
     config.vm.provision :shell, path: 'provision-linuxkit.sh', args: [config_builder_ip]
   end
 
