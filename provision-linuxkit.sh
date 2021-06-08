@@ -35,16 +35,31 @@ linuxkit version
 
 
 #
-# configure promtail.
+# build our local pkgs.
+
+for path in /vagrant/pkg/*; do
+    if [ -x "$path/build.sh" ]; then
+        "$path/build.sh"
+    else
+        linuxkit pkg build -docker -org local -network -hash latest "$path"
+    fi
+done
+
+
+#
+# configure linuxkit-example.
 
 sed -E "s,@@loki_push_url@@,http://$loki_ip_address:3100/loki/api/v1/push,g" /vagrant/promtail-config.yml \
     >promtail-config.yml
+
+sed -E "s,@@loki_push_url@@,http://$loki_ip_address:3100/loki/api/v1/push,g" /vagrant/linuxkit-example.yml \
+    >linuxkit-example.yml
 
 
 #
 # build linuxkit-example iso (for bios and efi boot) and kernel+initrd (for pxe boot) images.
 
-linuxkit build -format iso-bios,iso-efi,kernel+initrd -docker /vagrant/linuxkit-example.yml
+linuxkit build -format iso-bios,iso-efi,kernel+initrd -docker linuxkit-example.yml
 
 
 #

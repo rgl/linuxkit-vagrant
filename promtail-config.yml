@@ -15,19 +15,15 @@ scrape_configs:
       - labels:
           __path__: /host/var/log/*.log
           job: logwrite
+          host: linuxkit
     pipeline_stages:
-      # remove the /host/ prefix from the filename.
-      - regex:
-          source: filename
-          expression: '^/host(?P<filename>/.+)$'
+      - labeldrop:
+          - filename
       - regex:
           # NB this time refers to the time memlogd ingested the message.
           expression: '^(?P<time>\S+?) ((?P<type>onboot)\.\d+-)?(?P<source>\S+?)(\.(?P<stream>\S+?))? (?P<content>.*)$'
       - labels:
-          filename:
           source:
-          stream:
-          type:
       - timestamp:
           source: time
           format: RFC3339
@@ -46,19 +42,27 @@ scrape_configs:
                 format: RFC3339Nano
             - output:
                 source: content
+      # further parse the docker log to extract the time.
+      - match:
+          selector: '{source="docker"}'
+          stages:
+            - regex:
+                expression: "^time=\"(?P<time>\\S+?)\" (?P<content>.*)$"
+            - timestamp:
+                source: time
+                format: RFC3339Nano
+            - output:
+                source: content
   - job_name: containerd
     static_configs:
       - labels:
           __path__: /host/var/log/*.log.txt
           job: containerd
           source: containerd
+          host: linuxkit
     pipeline_stages:
-      # remove the /host/ prefix from the filename.
-      - regex:
-          source: filename
-          expression: '^/host(?P<filename>/.+)$'
-      - labels:
-          filename:
+      - labeldrop:
+          - filename
       - regex:
           expression: "^time=\"(?P<time>\\S+?)\" (?P<content>.*)$"
       - timestamp:
