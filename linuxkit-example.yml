@@ -5,7 +5,7 @@
 kernel:
   image: linuxkit/kernel:5.10.39
   # NB tty0 (or console) represent the current virtual terminal.
-  cmdline: "console=tty1"
+  cmdline: "ipv6.disable=1 console=tty1"
 init:
   - linuxkit/init:78fb57c7da07c4e43c3a37b27755581da087a3b6
   - linuxkit/runc:bf1e0c61fb4678d6428d0aabbd80db5ea24e4d4d
