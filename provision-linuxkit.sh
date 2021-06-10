@@ -37,12 +37,17 @@ linuxkit version
 #
 # build our local pkgs.
 
-for path in /vagrant/pkg/*; do
-    if [ -x "$path/build.sh" ]; then
-        "$path/build.sh"
-    else
-        linuxkit pkg build -docker -org local -network -hash latest "$path"
-    fi
+for pkg in docker:20.10.7-dind; do
+    name="$(echo $pkg | awk -F : '{print $1}')"
+    hash="$(echo $pkg | awk -F : '{print $2}')"
+    linuxkit pkg build \
+        -force \
+        -docker \
+        -network \
+        -platforms linux/amd64,linux/arm64 \
+        -org local \
+        -hash $hash \
+        "/vagrant/pkg/$name"
 done
 
 

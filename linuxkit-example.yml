@@ -72,7 +72,6 @@ services:
       - /etc/resolv.conf:/etc/resolv.conf
       - /lib/modules:/lib/modules
       - /etc/docker/daemon.json:/etc/docker/daemon.json
-    command: ["/usr/local/bin/docker-init", "/usr/local/bin/dockerd"]
 # NB because a tmpfs is mounted onto /var, /run, and /tmp by default, the tmpfs
 #    mounts will shadow anything specified in the files section.
 #    see https://github.com/linuxkit/linuxkit/blob/master/docs/yaml.md#files
