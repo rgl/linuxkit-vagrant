@@ -9,6 +9,18 @@ clients:
   - url: '@@loki_push_url@@'
 
 # NB you can manually test this with ./promtail-dry-run/run.sh.
+# NB loki has a major caveat, it refuses to receive out-of-order log lines
+#    for the same series/stream. when that happens, you will see an error
+#    alike:
+#       level=error ts=2021-06-14T15:12:53.275044479Z caller=client.go:334
+#       component=client host=10.3.0.2:3100 msg="final error sending batch"
+#       status=400 error="server returned HTTP status 400 Bad Request (400):
+#       entry with timestamp 2021-06-14 15:12:52 +0000 UTC ignored, reason:
+#       'entry out of order' for stream: {host=\"linuxkit\", job=\"logwrite\",
+#       source=\"docker\"},"
+#    you can minimize this by creating different series per log stream. e.g.
+#    like we do in the logwrite job.
+#    see https://github.com/owen-d/loki/blob/main/docs/sources/design-documents/2021-01-Ordering-Constraint-Removal.md
 scrape_configs:
   - job_name: logwrite
     static_configs:
@@ -24,6 +36,7 @@ scrape_configs:
           expression: '^(?P<time>\S+?) ((?P<type>onboot)\.\d+-)?(?P<source>\S+?)(\.(?P<stream>\S+?))? (?P<content>.*)$'
       - labels:
           source:
+          stream:
       - timestamp:
           source: time
           format: RFC3339
@@ -47,7 +60,7 @@ scrape_configs:
           selector: '{source="docker"}'
           stages:
             - regex:
-                expression: "^time=\"(?P<time>\\S+?)\" (?P<content>.*)$"
+                expression: '^time="(?P<time>\S+?)" (?P<content>.*)$'
             - timestamp:
                 source: time
                 format: RFC3339Nano
@@ -61,10 +74,15 @@ scrape_configs:
           source: containerd
           host: linuxkit
     pipeline_stages:
+      - regex:
+          source: filename
+          expression: '(\.(?P<stream>\S+?))?\.log\.txt$'
+      - labels:
+          stream:
       - labeldrop:
           - filename
       - regex:
-          expression: "^time=\"(?P<time>\\S+?)\" (?P<content>.*)$"
+          expression: '^time="(?P<time>\S+?)" (?P<content>.*)$'
       - timestamp:
           source: time
           format: RFC3339Nano

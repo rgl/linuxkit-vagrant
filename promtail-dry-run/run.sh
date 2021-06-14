@@ -12,5 +12,5 @@ docker run --rm \
         --dry-run \
         -config.file /var/run/promtail/promtail-config.yml \
     2>/dev/null &
-sleep 10
+sleep 15
 docker stop promtail-dry-run
