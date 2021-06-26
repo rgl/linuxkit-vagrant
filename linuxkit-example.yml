@@ -97,6 +97,8 @@ files:
       alias logread='/proc/1/root/usr/bin/logread'
       alias l='ls -lF'
       alias ll='l -a'
+      alias ctr='ctr -n services.linuxkit'
+      alias docker='ctr tasks exec --tty --exec-id shell docker docker'
     mode: "0644"
   - path: etc/promtail/config.yml
     source: promtail-config.yml
