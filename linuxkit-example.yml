@@ -59,7 +59,7 @@ services:
     binds.add:
       - /etc/profile.d/local.sh:/etc/profile.d/local.sh
   - name: hello
-    image: alpine:3.13
+    image: alpine:3.14
     command: ["/bin/sh", "-c", "while true; do echo hello $(date); sleep 1; done"]
   - name: docker
     image: local/docker:20.10.7-dind
