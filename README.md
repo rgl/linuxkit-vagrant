@@ -23,7 +23,8 @@ Run `vagrant up uefi-iso --no-destroy-on-error --no-tty` to launch `shared/linux
 Then access a linuxkit instance with, e.g.:
 
 ```bash
-vagrant ssh bios-iso
+vagrant ssh builder
+sudo ssh bios-iso
 ```
 
 You can also launch the iso with one of:
@@ -49,14 +50,20 @@ zcat linuxkit-example-initrd.img | cpio --list --numeric-uid-gid --verbose | les
 You can execute docker containers with:
 
 ```bash
-# enter the bios machine.
-vagrant ssh bios
+# enter the builder machine.
+vagrant ssh builder
+
+# switch to root.
+sudo -i
+
+# enter the bios-iso machine.
+ssh bios-iso
 
 # verify the dockerd configuration.
 cat /hostroot/etc/docker/daemon.json
 
 # open a shell in the docker service.
-ctr --namespace services.linuxkit tasks exec --exec-id shell -t docker ash
+ctr tasks exec --exec-id shell -t docker ash
 
 # execute a docker container.
 docker run \
