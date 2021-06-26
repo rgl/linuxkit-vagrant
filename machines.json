@@ -1,0 +1,28 @@
+[
+    {
+        "name": "bios-iso",
+        "type": "virtual"
+    },
+    {
+        "name": "uefi-iso",
+        "type": "virtual"
+    },
+    {
+        "name": "bios-pxe",
+        "type": "virtual"
+    },
+    {
+        "name": "uefi-pxe",
+        "type": "virtual"
+    },
+    {
+        "name": "odyssey",
+        "mac": "00:e0:4c:01:93:a8",
+        "type": "physical"
+    },
+    {
+        "name": "desk-mini",
+        "mac": "ec:b1:d7:71:ff:f3",
+        "type": "physical"
+    }
+]

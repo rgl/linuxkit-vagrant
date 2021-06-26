@@ -1,19 +1,29 @@
 This is a [Vagrant](https://www.vagrantup.com/) Environment for a playing with [LinuxKit](https://github.com/linuxkit/linuxkit).
 
+# Table Of Contents
+
+* [Usage](#usage)
+* [Logs](#logs)
+  * [Log Labels](#log-labels)
+* [Network Packet Capture](#network-packet-capture)
+* [Network Booting](#network-booting)
+  * [Tested Physical Machines](#tested-physical-machines)
+* [References](#references)
+
 # Usage
 
 Build and install the [Ubuntu Base Box](https://github.com/rgl/ubuntu-vagrant).
 
-Run `vagrant up builder --no-destroy-on-error --no-tty` to launch the environment that builds the `shared/linuxkit-example.iso` and `shared/linuxkit-example-efi.iso` files.
+Run `vagrant up builder --no-destroy-on-error --no-tty` to launch the environment that builds the `shared/linuxkit-example.iso` and `shared/linuxkit-example-uefi.iso` files.
 
-Run `vagrant up bios --no-destroy-on-error --no-tty` to launch `shared/linuxkit-example.iso`.
+Run `vagrant up bios-iso --no-destroy-on-error --no-tty` to launch `shared/linuxkit-example.iso`.
 
-Run `vagrant up efi --no-destroy-on-error --no-tty` to launch `shared/linuxkit-example-efi.iso` (**NB** this is somewhat boken because the screen stays blank).
+Run `vagrant up uefi-iso --no-destroy-on-error --no-tty` to launch `shared/linuxkit-example-uefi.iso`.
 
 Then access a linuxkit instance with, e.g.:
 
 ```bash
-vagrant ssh bios
+vagrant ssh bios-iso
 ```
 
 You can also launch the iso with one of:
@@ -54,7 +64,7 @@ docker run \
   --restart unless-stopped \
   --name hello-docker \
   --label worker_id=123 \
-  alpine:3.13 \
+  alpine:3.14 \
     /bin/sh \
     -c \
     'while true; do echo hello docker $(date); sleep 1; done'
@@ -150,6 +160,51 @@ Available source label instances:
 | `rngd1`        | `rngd` onboot service           |
 | `sshd`         | `sshd` service                  |
 
+## Network Packet Capture
+
+You can easily capture and see traffic from the host with the `wireshark.sh`
+script, e.g., to capture the traffic from the `eth1` interface:
+
+```bash
+./wireshark.sh builder eth1
+```
+
+## Network Booting
+
+This environment can also PXE/iPXE/UEFI-HTTP boot LinuxKit.
+
+To PXE boot a BIOS Virtual Machine with PXE/TFTP/iPXE/HTTP run:
+
+```bash
+vagrant up bios-pxe --no-destroy-on-error --no-tty
+```
+
+To PXE boot a UEFI Virtual Machine with PXE/TFTP/iPXE/HTTP run:
+
+```bash
+vagrant up uefi-pxe --no-destroy-on-error --no-tty
+```
+
+To boot Physical Machines you have to:
+
+* Create a Linux Bridge that can reach a Physical Switch that connects to
+  your Physical Machines.
+  * This environment assumes you have a setup like [rgl/ansible-collection-tp-link-easy-smart-switch](https://github.com/rgl/ansible-collection-tp-link-easy-smart-switch).
+  * To configure it otherwise you must modify the `Vagrantfile`.
+* Add your machines to `machines.json`.
+* Configure your machines to PXE boot.
+
+### Tested Physical Machines
+
+This was tested on the following physical machines and boot modes:
+
+* [Seeed Studio Odyssey X86J4105](https://github.com/rgl/seeedstudio-odyssey-x86j4105-notes)
+  * It boots using [UEFI/HTTP/PXE](https://github.com/rgl/seeedstudio-odyssey-x86j4105-notes/tree/master/network-boot#uefi-http-pxe).
+* [HP EliteDesk 800 35W G2 Desktop Mini](https://support.hp.com/us-en/product/hp-elitedesk-800-35w-g2-desktop-mini-pc/7633266)
+  * It boots using UEFI/TFTP/PXE.
+  * This machine can be remotely managed with [MeshCommander](https://www.meshcommander.com/meshcommander).
+    * It was configured as described at [rgl/intel-amt-notes](https://github.com/rgl/intel-amt-notes).
+
 # References
 
 * LinuxKit
@@ -168,4 +223,13 @@ Available source label instances:
   * [Configuring the Docker Driver](https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/)
 * Loki:
   * [LogQL: Log Query Language](https://grafana.com/docs/loki/latest/logql/)
+* iPXE:
+  * [Scripting](https://ipxe.org/scripting)
+  * [Command reference](https://ipxe.org/cmd)
+  * [Settings reference](https://ipxe.org/cfg)
+* Matchbox:
+  * [PXE-enabled DHCP](https://github.com/poseidon/matchbox/blob/master/docs/network-setup.md#pxe-enabled-dhcp)
+  * [Proxy-DHCP](https://github.com/poseidon/matchbox/blob/master/docs/network-setup.md#proxy-dhcp)
+* Dynamic Host Configuration Protocol (DHCP):
+  * [Parameters / Options](https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml)
 * [Building the Simplest Possible Linux System by Rob Landley](https://www.youtube.com/watch?v=Sk9TatW9ino)

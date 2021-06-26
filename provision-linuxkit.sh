@@ -62,9 +62,10 @@ sed -E "s,@@loki_push_url@@,http://$loki_ip_address:3100/loki/api/v1/push,g" /va
 
 
 #
-# build linuxkit-example iso (for bios and efi boot) and kernel+initrd (for pxe boot) images.
+# build linuxkit-example iso (for bios and uefi boot) and kernel+initrd (for pxe boot) images.
 
 linuxkit build -format iso-bios,iso-efi,kernel+initrd -docker linuxkit-example.yml
+mv linuxkit-example-efi.iso linuxkit-example-uefi.iso
 
 
 #
@@ -73,3 +74,13 @@ linuxkit build -format iso-bios,iso-efi,kernel+initrd -docker linuxkit-example.y
 mkdir -p /vagrant/shared
 cp -f bin/linuxkit /vagrant/shared
 cp -f linuxkit-example* /vagrant/shared
+
+
+#
+# install into the pxe server.
+
+# add the linuxkit-example kernel and initrd matchbox assets.
+install -m 644 linuxkit-example-kernel /var/lib/matchbox/assets
+install -m 644 linuxkit-example-initrd.img /var/lib/matchbox/assets
+python3 /vagrant/modules/pxe_server_register_machines.py
+systemctl restart dnsmasq
