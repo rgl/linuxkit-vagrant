@@ -1,7 +1,7 @@
 # NB this is a modified version of:
-#      https://github.com/linuxkit/linuxkit/blob/79b32dc2c74a7cd2ef56c834c771b978a5ed16a7/examples/docker.yml
-#      https://github.com/linuxkit/linuxkit/blob/79b32dc2c74a7cd2ef56c834c771b978a5ed16a7/examples/sshd.yml
-#      https://github.com/linuxkit/linuxkit/blob/79b32dc2c74a7cd2ef56c834c771b978a5ed16a7/examples/logging.yml
+#      https://github.com/linuxkit/linuxkit/blob/46d4edc967b5a9de705840d30c83b83fedabb492/examples/docker.yml
+#      https://github.com/linuxkit/linuxkit/blob/46d4edc967b5a9de705840d30c83b83fedabb492/examples/sshd.yml
+#      https://github.com/linuxkit/linuxkit/blob/46d4edc967b5a9de705840d30c83b83fedabb492/examples/logging.yml
 kernel:
   image: linuxkit/kernel:5.10.39
   # NB tty0 (or console) represent the current virtual terminal.
