@@ -24,7 +24,8 @@ Then access a linuxkit instance with, e.g.:
 
 ```bash
 vagrant ssh builder
-sudo ssh bios-iso
+sudo ssh bios-iso # or uefi-iso
+exit
 ```
 
 You can also launch the iso with one of:
