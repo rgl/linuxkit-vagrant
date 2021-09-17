@@ -7,7 +7,7 @@ import sys
 
 
 # matchbox generics.
-# NB this will be available at http://{builder}/generic?mac={mac}
+# NB this will be available at http://{builder}/generic?mac={mac:hexhyp}
 def get_matchbox_generics():
     data = {
         "generic_example_metadata": "{{.example_metadata}}",
@@ -22,7 +22,7 @@ def save_matchbox_generics():
 
 
 # matchbox profiles.
-# NB the ipxe script will be available at http://{builder}/ipxe?mac={mac}
+# NB the ipxe script will be available at http://{builder}/ipxe?mac={mac:hexhyp}
 #    it will be equivalent to:
 #       #!ipxe
 #       kernel linuxkit-example-kernel initrd=linuxkit-example-initrd.img $(cat linuxkit-example-cmdline)
@@ -60,8 +60,8 @@ def save_matchbox_profiles():
             json.dump(data, f, indent=4)
 
 
-# NB the ipxe script will be available at http://{builder}/ipxe?mac={mac}
-# NB the metadata part will be available at http://{builder}/metadata?mac={mac}
+# NB the ipxe script will be available at http://{builder}/ipxe?mac={mac:hexhyp}
+# NB the metadata part will be available at http://{builder}/metadata?mac={mac:hexhyp}
 def get_matchbox_groups():
     if not os.path.exists('/var/lib/matchbox/profiles/linuxkit-example.json'):
         return
