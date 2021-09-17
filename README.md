@@ -44,7 +44,7 @@ You can also directly launch the kernel and initrd in qemu:
 You can list the contents of the initramfs with:
 
 ```bash
-zcat linuxkit-example-initrd.img | cpio --list --numeric-uid-gid --verbose | less
+zcat shared/linuxkit-example-initrd.img | cpio --list --numeric-uid-gid --verbose | less
 ```
 
 You can execute docker containers with:
