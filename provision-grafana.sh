@@ -5,7 +5,7 @@ loki_ip_address="${1:-10.10.0.2}"
 
 # see https://github.com/grafana/grafana/releases
 # see https://hub.docker.com/r/grafana/grafana/tags
-grafana_version="8.0.3"
+grafana_version="8.1.4"
 
 mkdir -p grafana/datasources
 cd grafana
