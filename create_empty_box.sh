@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux
+set -euxo pipefail
 
 [ -d ~/.vagrant.d/boxes/empty ] && exit 0
 
