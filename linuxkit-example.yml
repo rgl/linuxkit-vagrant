@@ -40,7 +40,7 @@ services:
   - name: kmsg
     image: linuxkit/kmsg:df84eda2a82d5e24ddfe241831af3efb13a1a557
   - name: promtail
-    image: grafana/promtail:2.2.1
+    image: grafana/promtail:2.3.0
     binds.add:
       - /etc/promtail/config.yml:/etc/promtail/config.yml
       - /var/log:/host/var/log

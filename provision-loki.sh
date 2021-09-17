@@ -3,7 +3,7 @@ set -euxo pipefail
 
 # see https://github.com/grafana/loki/releases
 # see https://hub.docker.com/r/grafana/loki/tags
-loki_version="2.2.1"
+loki_version="2.3.0"
 
 mkdir -p loki
 cd loki

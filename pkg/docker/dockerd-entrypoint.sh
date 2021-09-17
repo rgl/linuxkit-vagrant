@@ -22,7 +22,7 @@ while ! docker info --format '{{.ServerVersion}}' >/dev/null 2>&1; do sleep 1; d
 docker plugin install \
     --grant-all-permissions \
     --alias loki \
-    grafana/loki-docker-driver:2.2.1 \
+    grafana/loki-docker-driver:2.3.0 \
         LOG_LEVEL=debug
 
 # shutdown dockerd.

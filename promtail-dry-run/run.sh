@@ -8,7 +8,7 @@ docker run --rm \
     --name promtail-dry-run \
     -v $PWD/log:/host/var/log:ro \
     -v $PWD/..:/var/run/promtail:ro \
-    grafana/promtail:2.2.1 \
+    grafana/promtail:2.3.0 \
         --dry-run \
         -config.file /var/run/promtail/promtail-config.yml \
     2>/dev/null &
