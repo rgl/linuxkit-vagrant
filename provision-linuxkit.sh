@@ -37,7 +37,7 @@ linuxkit version
 #
 # build our local pkgs.
 
-for pkg in docker:20.10.7-dind; do
+for pkg in docker:20.10.8-dind; do
     name="$(echo $pkg | awk -F : '{print $1}')"
     hash="$(echo $pkg | awk -F : '{print $2}')"
     linuxkit pkg build \
