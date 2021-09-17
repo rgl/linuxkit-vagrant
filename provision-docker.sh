@@ -27,6 +27,9 @@ cat >/etc/docker/daemon.json <<'EOF'
 {
     "experimental": false,
     "debug": false,
+    "features": {
+        "buildkit": true
+    },
     "log-driver": "journald",
     "labels": [
         "os=linux"
