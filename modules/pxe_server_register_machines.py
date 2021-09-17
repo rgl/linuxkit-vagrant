@@ -142,7 +142,7 @@ def get_machines(prefix='/vagrant'):
 
 if __name__ == '__main__':
     if 'get-machines-json' in sys.argv:
-        print(json.dumps(get_machines('.')))
+        print(json.dumps(get_machines('.'), indent=4))
     else:
         save_matchbox_generics()
         save_matchbox_profiles()
