@@ -26,7 +26,7 @@ onboot:
   #       (like dockerd) use the dns servers at "127.0.0.1:53" and "[::1]:53",
   #       but since those do not really exist in this machine, the dns
   #       resolution will fail.
-  #       see https://github.com/golang/go/blob/go1.16.5/src/net/dnsconfig_unix.go#L18-L19
+  #       see https://github.com/golang/go/blob/go1.17.1/src/net/dnsconfig_unix.go#L20
   - name: dhcpcd
     image: linuxkit/dhcpcd:1033f340e2d42f86a60aab70752346f0045ea388
     command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpcd.conf", "-1"]
