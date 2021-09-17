@@ -17,6 +17,7 @@ CONFIG_BUILDER_EXTERNAL_DHCP_RANGE = '10.3.0.100,10.3.0.200,10m'
 ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 
 def virtual_machines
+  return [] unless File.exists? 'shared/machines.json'
   machines = JSON.load(File.read('shared/machines.json')).select{|m| m['type'] == 'virtual'}
   machines.each_with_index.map do |m, i|
     (firmware, boot) = m['name'].split('-')
