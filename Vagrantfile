@@ -12,6 +12,9 @@ CONFIG_BUILDER_BRIDGE_NAME = 'br-rpi'
 CONFIG_BUILDER_EXTERNAL_IP = '10.3.0.2'
 CONFIG_BUILDER_EXTERNAL_DHCP_RANGE = '10.3.0.100,10.3.0.200,10m'
 
+# this environment libvirt network name.
+CONFIG_NETWORK_NAME = "#{File.basename(File.dirname(__FILE__))}0"
+
 # to make sure the vms are created sequentially, we
 # have to force a --no-parallel execution.
 ENV['VAGRANT_NO_PARALLEL'] = 'yes'
@@ -83,7 +86,7 @@ Vagrant.configure('2') do |config|
         else
           lv.boot 'network'
         end
-        lv.management_network_name = 'linuxkit-vagrant0'
+        lv.management_network_name = CONFIG_NETWORK_NAME
         lv.management_network_mac = mac
         lv.management_network_address = "#{CONFIG_BUILDER_IP}/24"
         lv.graphics_type = 'spice'
