@@ -49,7 +49,9 @@ Vagrant.configure('2') do |config|
     if CONFIG_BUILDER_BRIDGE_NAME
       config.vm.network :public_network,
         ip: CONFIG_BUILDER_EXTERNAL_IP,
-        dev: CONFIG_BUILDER_BRIDGE_NAME
+        dev: CONFIG_BUILDER_BRIDGE_NAME,
+        mode: 'bridge',
+        type: 'bridge'
     end
     config.vm.provision :shell, path: 'provision-base.sh'
     config.vm.provision :shell, path: 'provision-iptables.sh'
