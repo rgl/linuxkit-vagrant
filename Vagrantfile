@@ -19,6 +19,12 @@ CONFIG_NETWORK_NAME = "#{File.basename(File.dirname(__FILE__))}0"
 # have to force a --no-parallel execution.
 ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 
+# enable typed triggers.
+# NB this is needed to modify the libvirt domain scsi controller model to virtio-scsi.
+ENV['VAGRANT_EXPERIMENTAL'] = 'typed_triggers'
+
+require 'open3'
+
 def virtual_machines
   return [] unless File.exists? 'shared/machines.json'
   machines = JSON.load(File.read('shared/machines.json')).select{|m| m['type'] == 'virtual'}
@@ -80,6 +86,7 @@ Vagrant.configure('2') do |config|
       config.vm.provider :libvirt do |lv, config|
         config.vm.box = nil
         lv.loader = '/usr/share/ovmf/OVMF.fd' if firmware == 'uefi'
+        lv.storage :file, :size => '30G', :device => 'sda', :bus => 'scsi', :discard => 'unmap', :cache => 'unsafe'
         if boot == 'iso'
           lv.storage :file, :device => :cdrom, :path => "#{Dir.pwd}/shared/linuxkit-example#{firmware == 'bios' && '' || '-'+firmware}.iso"
           lv.boot 'cdrom'
@@ -123,6 +130,20 @@ Vagrant.configure('2') do |config|
           lv.qemuargs :value => value
         end
         config.vm.synced_folder '.', '/vagrant', disabled: true
+        config.trigger.before :'VagrantPlugins::ProviderLibvirt::Action::StartDomain', type: :action do |trigger|
+          trigger.ruby do |env, machine|
+            # modify the scsi controller model to virtio-scsi.
+            # see https://github.com/vagrant-libvirt/vagrant-libvirt/pull/692
+            # see https://github.com/vagrant-libvirt/vagrant-libvirt/issues/999
+            stdout, stderr, status = Open3.capture3(
+              'virt-xml', machine.id,
+              '--edit', 'type=scsi',
+              '--controller', 'model=virtio-scsi')
+            if status.exitstatus != 0
+              raise "failed to run virt-xml to modify the scsi controller model. status=#{status.exitstatus} stdout=#{stdout} stderr=#{stderr}"
+            end
+          end
+        end
       end
     end
   end
